@@ -1,0 +1,27 @@
+{
+	"name": "navsight-api",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"@cloudflare/workers-types": "^4.20250509.0",
+		"@types/google.maps": "^3.58.1",
+		"typescript": "^5.5.2",
+		"vitest": "~3.0.7",
+		"wrangler": "^4.14.4"
+	},
+	"dependencies": {
+		"@googlemaps/js-api-loader": "^1.16.8",
+		"@supabase/supabase-js": "^2.49.4",
+		"groq-sdk": "^0.21.0",
+		"jose": "^6.0.11",
+		"openai": "^4.98.0"
+	}
+}
