@@ -9,13 +9,26 @@ import AVFoundation
 import Foundation
 
 class PlaybackEngine: ObservableObject {
-    // MARK: Private, internal
-    private var player: AVAudioPlayer
-    private let session = AVAudioSession.sharedInstance()
+    var cue: AudioCue
+    var dialogue: Dialogue
     
-    init(data: Data) throws {
-        player = try AVAudioPlayer(data: data)
+    init(cue: AudioCue) throws {
+        self.cue = cue
         
+        let language = UserDefaults.standard.string(forKey: "language") ?? "en"
+        self.dialogue = cue.localizedCues?[language] ?? cue.defaultCue
+       
+        var data: Data? = nil
+        
+        if let assetName = dialogue.assetName, let fileURL = Bundle.main.url(forResource: assetName, withExtension: nil) {
+            data = try Data(contentsOf: fileURL)
+        } else if let file = dialogue.file {
+            data = try Data(contentsOf: file)
+        }
+        
+        guard let data else { throw "No bytes could be loaded into player" }
+        
+        player = try AVAudioPlayer(data: data)
         player.isMeteringEnabled = true
     }
     
@@ -23,6 +36,7 @@ class PlaybackEngine: ObservableObject {
     private var averagePower: Double = 0.0
     private var linearLevel: Double = 0.0
     
+    // MARK: Playback control
     func play() throws {
         try session.setActive(true)
         try session.setCategory(.playback)
@@ -49,4 +63,8 @@ class PlaybackEngine: ObservableObject {
         
         player.stop()
     }
+    
+    // MARK: Private, internal
+    private(set) var player: AVAudioPlayer
+    private let session = AVAudioSession.sharedInstance()
 }

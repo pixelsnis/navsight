@@ -8,6 +8,7 @@ export interface Env {
 	SUPABASE_URL: string;
 	SUPABASE_KEY: string;
 	SUPABASE_JWT_SECRET: string;
+	OPENAI_KEY: string;
 	ELEVENLABS_KEY: string;
 	MAPS_KEY: string;
 }

@@ -8,14 +8,24 @@
 import Foundation
 
 enum TTSProcessor {
-    static func processAndSave(text: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    struct TTSRequest: Codable {
+        enum SpeechProvider: String, Codable {
+            case OpenAI = "openai", ElevenLabs = "elevenlabs"
+        }
+        
+        var text: String
+        var language: String
+        var provider: SpeechProvider
+    }
+    
+    static func process(text: String, completion: @escaping (Result<AudioCue, Error>) -> Void) {
         do {
             let endpoint = URL(string: "https://navsight-api.aneesh-30e.workers.dev/tts")!
             
             var request = URLRequest(url: endpoint)
             try request.authenticate()
             
-            request.httpBody = text.data(using: .utf8)
+            request.httpBody = try JSONEncoder().encode(TTSRequest(text: text, language: UserDefaults.standard.string(forKey: "language") ?? "en", provider: .OpenAI))
             
             Task {
                 // The API streams back the bytes of audio as a response.
@@ -27,7 +37,15 @@ enum TTSProcessor {
                     throw error ?? "Unknown error"
                 }
                 
-                completion(.success(data))
+                let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).mp3", conformingTo: .mp3)
+                
+                FileManager.default.createFile(atPath: fileURL.absoluteString, contents: data)
+                
+                let cue: AudioCue = .init(default: .init(file: fileURL, transcription: [
+                    .init(text: text, time: 0)
+                ]))
+                
+                completion(.success(cue))
             }
         } catch {
             completion(.failure(error))

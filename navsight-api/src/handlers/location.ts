@@ -81,7 +81,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
                     You are a helpful assistant for the blind that describes the location they are in. 
                     You will be provided their relative address and the names of upto two important landmarks nearby. 
                     Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are.
-                    Be extremely concise in your speech. Do not waste words. Speak in ${userLanguagePreference} using English characters. Do not use complex language. 
+                    Be extremely concise in your speech. Do not waste words. Speak in ${userLanguagePreference} (ISO language code) but write only in English letters. Use simple, commonly-spoken words. 
                     `,
 				},
 				{
@@ -107,6 +107,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 			{
 				text: textResponse ?? 'Sorry, something went wrong. Please try again.',
 				language: userLanguagePreference,
+				provider: 'openai',
 			},
 			env
 		);
