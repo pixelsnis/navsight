@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { Env } from '..';
+import { ElevenLabsClient } from 'elevenlabs';
 
 export const handleTTSRequest = async (request: Request, env: Env): Promise<Response> => {
 	try {
@@ -25,17 +26,24 @@ export const handleTTSRequest = async (request: Request, env: Env): Promise<Resp
 };
 
 export const getTTSAudio = async (request: TTSRequest, env: Env) => {
-	const openai = new OpenAI({ apiKey: env.OPENAI_KEY });
+	const voiceID: string = '3gsg3cxXyFLcGIfNbM6C';
 
-	const audio = await openai.audio.speech.create({
-		model: 'gpt-4o-mini-tts',
-		response_format: 'mp3',
-		voice: 'alloy',
-		input: request.text,
-		instructions: `Speak in a clean, refined Indian accent. Keeep a natural yet slightly upbeat tone. Speak in ${request.language}`,
+	const client = new ElevenLabsClient({ apiKey: env.ELEVENLABS_KEY });
+	const audio = await client.textToSpeech.convert(voiceID, {
+		text: request.text,
+		model_id: 'elevenlabs_multilingual_v2',
+		output_format: 'mp3_44100_128',
+		language_code: request.language ?? 'en-US',
 	});
 
-	return Buffer.from(await audio.arrayBuffer());
+	var chunks: Buffer[] = [];
+
+	for await (const buf of audio) {
+		chunks.push(buf);
+	}
+
+	const content = Buffer.concat(chunks);
+	return content;
 };
 export interface TTSRequest {
 	text: string;
