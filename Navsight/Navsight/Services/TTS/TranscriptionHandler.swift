@@ -8,10 +8,11 @@
 import Foundation
 
 extension PlaybackEngine {
-    func transcriptionSegment(at time: TimeInterval? = nil) -> String? {
-        let interval: TimeInterval = time ?? player.currentTime
+    func currentTranscriptionSegment(at time: TimeInterval? = nil) -> String? {
+        var interval: TimeInterval = time ?? player?.currentTime ?? 0
+        interval += 0.5 // Show the transcription 500ms early to compensate for the fade out delay in the UI
         
-        for segment in dialogue.transcription.reversed() {
+        for segment in dialogue?.transcription.reversed() ?? [] {
             if interval >= segment.time { return segment.text }
         }
         

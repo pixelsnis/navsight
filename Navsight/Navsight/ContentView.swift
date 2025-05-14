@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("signedIn") private var signedIn: Bool = false
+    
     var body: some View {
-        VStack {
+        if signedIn {
             
+        } else {
+            SetupView()
         }
     }
 }
