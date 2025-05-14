@@ -17,7 +17,7 @@ struct SetupView: View {
     
     var body: some View {
         VStack(spacing: 90) {
-            if vm.stage == .signIn {
+            if vm.transitionStage == .signIn {
                 Picker("Select language", selection: $language) {
                     ForEach(["en", "hi", "kn"], id: \.self) {
                         Text(vm.languageLabels[$0] ?? "English")
@@ -29,40 +29,52 @@ struct SetupView: View {
                     restartPlayback()
                 }
             } else {
-                Spacer()
+                Rectangle()
+                    .fill(.clear)
+                    .frame(height: 1)
             }
             
             VStack(spacing: 36) {
-                if vm.stage != .signIn {
+                if vm.transitionStage != .signIn {
                     StageHeader(icon: vm.headerIcon, title: vm.headerTitle, subtitle: vm.headerSubtitle)
-                        .animation(.default, value: vm.headerIcon) // Since all the fields change together, observing one is sufficient.
-                        .transition(.move(edge: .bottom).combined(with: .blurReplace()))
+                        .frame(maxWidth: .infinity)
+                        .opacity((vm.stage != .signIn || vm.stage != .transition) ? 1 : 0)
+                        .transition(.opacity)
                 }
                 
                 ZStack {
                     Button {
-                        
+                        vm.requestLocationAccess()
                     } label: {
                         TTSCircle(player: player, scale: vm.circleScale)
                     }
+                    .allowsHitTesting(vm.stage == .location)
                     
                     if vm.stage == .location {
                         LocationGrantButton()
                             .transition(.opacity)
+                    } else if vm.stage == .qrCode {
+                        InviteQRCode()
+                            .transition(.opacity)
                     }
                 }
-                
-                if vm.stage == .signIn {
+                if vm.transitionStage == .signIn {
                     pageOne()
                         .frame(maxWidth: .infinity)
-                        .transition(.scale.combined(with: .blurReplace()))
-                } else if vm.stage == .location {
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace()))
+                } else if vm.transitionStage == .location {
                     LocationGrantPromptArrow()
+                        .opacity(vm.stage == .location ? 1 : 0)
+                        .transition(.move(edge: .bottom).combined(with: .blurReplace()))
+                } else if vm.transitionStage == .qrCode {
+                    Text("Waiting for account setup...")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                         .transition(.move(edge: .bottom).combined(with: .blurReplace()))
                 }
+                
             }
             .padding(.horizontal)
-            .animation(.smooth(duration: 1), value: vm.stage)
             
             Spacer()
         }
@@ -93,8 +105,9 @@ struct SetupView: View {
         }
     }
     
-    private func signIn() {
-        vm.stage = .location
+    private func signIn(_ result: Result<ASAuthorization, any Error>) {
+        try? player.stop()
+        vm.signIn(result, as: .ward)
     }
     
     @ViewBuilder private func pageOne() -> some View {
@@ -104,7 +117,7 @@ struct SetupView: View {
             SignInWithAppleButton { request in
                 request.requestedScopes = [.fullName, .email]
             } onCompletion: { result in
-                signIn()
+                signIn(result)
             }
             .signInWithAppleButtonStyle(scheme == .light ? .black : .white)
             .frame(height: 42)

@@ -24,7 +24,14 @@ class LocationStreamingService: NSObject {
     var status: Status = .inactive
     var error: LocationServiceError? = nil
 
-    private let locationManager = CLLocationManager()
+    private let locationManager: CLLocationManager = .init()
+    private var continuation: CheckedContinuation<Bool, Never>? = nil
+    
+    override init() {
+        super.init()
+        
+        locationManager.delegate = self
+    }
 
     func observe() async {
         // Check if location permission is granted
@@ -52,10 +59,11 @@ class LocationStreamingService: NSObject {
         locationManager.startUpdatingLocation()
     }
 
-    private func requestPermission() async -> Bool {
-        locationManager.requestAlwaysAuthorization()
-
-        return (locationManager.authorizationStatus != .authorizedAlways)
+    func requestPermission() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            self.continuation = continuation
+            locationManager.requestAlwaysAuthorization()
+        }
     }
 }
 
@@ -73,4 +81,17 @@ extension LocationStreamingService: CLLocationManagerDelegate {
             try? await LocationWriter.write(latitude: lat, longitude: lng)
         }
     }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard let continuation else { return }
+        
+        if manager.authorizationStatus == .authorizedAlways {
+            continuation.resume(returning: true)
+        } else if manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted {
+            continuation.resume(returning: false)
+        }
+        
+        self.continuation = nil
+    }
 }
+

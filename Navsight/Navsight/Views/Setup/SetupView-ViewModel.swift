@@ -5,7 +5,9 @@
 //  Created by Aneesh on 13/5/25.
 //
 
+import AuthenticationServices
 import Foundation
+import SwiftUI
 
 extension SetupView {
     @Observable
@@ -17,13 +19,14 @@ extension SetupView {
         ]
         
         var stage: SetupStage = .signIn
+        var transitionStage: SetupStage = .signIn
         
         // MARK: Computed properties
         var headerIcon: String {
-            switch stage {
+            switch transitionStage {
             case .location:
                 return "mappin.and.ellipse"
-            case .qrShow:
+            case .qrCode:
                 return "qrcode.viewfinder"
             default:
                 return ""
@@ -31,10 +34,10 @@ extension SetupView {
         }
         
         var headerTitle: String {
-            switch stage {
+            switch transitionStage {
             case .location:
                 return "Location services"
-            case .qrShow:
+            case .qrCode:
                 return "Scan this with Navsight on your device"
             case .complete:
                 return "Setup complete"
@@ -44,10 +47,10 @@ extension SetupView {
         }
         
         var headerSubtitle: String {
-            switch stage {
+            switch transitionStage {
             case .location:
                 return "Navsight needs location access to work correctly."
-            case .qrShow:
+            case .qrCode:
                 return "This will set up your side as a guardian."
             case .complete:
                 return "You can now hand this back to your ward."
@@ -57,10 +60,10 @@ extension SetupView {
         }
         
         var circleScale: Double {
-            switch stage {
+            switch transitionStage {
             case .location:
                 return 1.8
-            case .qrShow:
+            case .qrCode:
                 return 2.0
             default:
                 return 1.0
@@ -68,16 +71,51 @@ extension SetupView {
         }
         
         // MARK: UI Functions
-        func navigate(to stage: SetupStage) {
-            self.stage = .transition
+        func navigate(to stage: SetupStage, transition: Bool = false) {
+            if transition {
+                withAnimation(.default) {
+                    self.transitionStage = stage
+                    self.stage = .transition
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(800)), execute: {
+                    withAnimation(.default) {
+                        self.stage = stage
+                    }
+                })
+                return
+            }
             
-            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(500)), execute: {
+            withAnimation(.default) {
+                self.transitionStage = stage
                 self.stage = stage
-            })
+            }
+        }
+        
+        // MARK: Logical Functions
+        func signIn(_ result: Result<ASAuthorization, any Error>, as role: UserAccount.AccountRole) {
+            Task {
+                do {
+                    try await SignInService.signIn(result, as: role)
+                    self.navigate(to: .location, transition: true)
+                } catch {
+                    print("Failed to sign in: \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        func requestLocationAccess() {
+            Task {
+                let permission = await LocationStreamingService().requestPermission()
+                
+                if permission {
+                    navigate(to: .qrCode)
+                }
+            }
         }
     }
     
     enum SetupStage {
-        case signIn, guardianSetup, location, qrShow, complete, transition
+        case signIn, location, qrCode, complete, transition
     }
 }
