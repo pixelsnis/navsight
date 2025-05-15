@@ -5,51 +5,46 @@
 //  Created by Aneesh on 14/5/25.
 //
 
-import AuthenticationServices
 import Foundation
+import GoogleSignIn
+import GoogleSignInSwift
+import SwiftUI
 
 enum SignInService {
-    struct CreateAccountRequest {
-        var name: String
-        var email: String
-        var role: UserAccount.AccountRole
-    }
-    
-    static func signIn(_ result: Result<ASAuthorization, any Error>, as role: UserAccount.AccountRole) async throws {
+    static func signIn(as role: UserAccount.AccountRole) async throws {
         do {
-            guard let credential = try result.get().credential as? ASAuthorizationAppleIDCredential else { return }
+            guard let rootViewController = await UIApplication.shared.keyWindow?.rootViewController else { return }
+         
+            let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
             
-            guard let idToken = credential.identityToken.flatMap({ String(data: $0, encoding: .utf8 )}) else { return }
+            guard let idToken = result.user.idToken else { return }
+            let accessToken = result.user.accessToken.tokenString
             
-            try await Supabase.client.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken))
+            guard let profile = result.user.profile else { return }
             
-            var accountRequest: CreateAccountRequest? = nil
+            try await Supabase.client.auth.signInWithIdToken(credentials: .init(provider: .google, idToken: idToken.tokenString, accessToken: accessToken))
+            guard let userID = UserID.current else { return }
             
-            if let fullName = credential.fullName, let email = credential.email {
-                accountRequest = .init(name: fullName.formatted(), email: email, role: role)
-            }
-            
-            try await signIntoAccount(creating: accountRequest)
+            let user: UserAccount = .init(id: userID, name: profile.name, email: profile.email, role: role, language: UserDefaults.standard.string(forKey: "language") ?? "en")
+            try await Supabase.client.from("users").upsert(user).execute()
         } catch {
             throw error
         }
     }
-    
-    static private func signIntoAccount(creating account: CreateAccountRequest? = nil) async throws {
-        guard let userID = UserID.current else { throw "User not signed in "}
-        
-        if let account {
-            let userAccount: UserAccount = .init(id: userID, name: account.name, email: account.email, role: account.role, language: UserDefaults.standard.string(forKey: "language") ?? "en")
-            
-            try await Supabase.client.from("users").insert(userAccount).execute()
-            UserDefaults.standard.set(try JSONEncoder().encode(userAccount), forKey: "account")
-            
-            return
-        }
-        
-        let queryResult: [UserAccount] = try await Supabase.client.from("users").select().eq("id", value: userID).execute().value
-        guard let acc = queryResult.first else { throw "Account not found" }
-        
-        UserDefaults.standard.set(try JSONEncoder().encode(acc), forKey: "account")
+}
+
+extension UIApplication {
+    var keyWindow: UIWindow? {
+        // Get connected scenes
+        return self.connectedScenes
+            // Keep only active scenes, onscreen and visible to the user
+            .filter { $0.activationState == .foregroundActive }
+            // Keep only the first `UIWindowScene`
+            .first(where: { $0 is UIWindowScene })
+            // Get its associated windows
+            .flatMap({ $0 as? UIWindowScene })?.windows
+            // Finally, keep only the key window
+            .first(where: \.isKeyWindow)
     }
+    
 }

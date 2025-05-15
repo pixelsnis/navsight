@@ -60,6 +60,11 @@ class LocationStreamingService: NSObject {
     }
 
     func requestPermission() async -> Bool {
+        let currentAuthorization = locationManager.authorizationStatus
+        if (currentAuthorization != .notDetermined) {
+            return currentAuthorization == .authorizedAlways || currentAuthorization == .authorizedWhenInUse
+        }
+        
         return await withCheckedContinuation { continuation in
             self.continuation = continuation
             locationManager.requestAlwaysAuthorization()
@@ -85,7 +90,7 @@ extension LocationStreamingService: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         guard let continuation else { return }
         
-        if manager.authorizationStatus == .authorizedAlways {
+        if manager.authorizationStatus == .authorizedAlways || manager.authorizationStatus == .authorizedWhenInUse {
             continuation.resume(returning: true)
         } else if manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted {
             continuation.resume(returning: false)

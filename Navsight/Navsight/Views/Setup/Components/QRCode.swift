@@ -18,7 +18,7 @@ extension SetupView {
                     Image(uiImage: qr)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 220, height: 220)
+                        .frame(width: 260, height: 260)
                         .transition(.scale.combined(with: .blurReplace()))
                 } else {
                     ProgressView()

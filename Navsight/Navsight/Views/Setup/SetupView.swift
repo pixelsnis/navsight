@@ -5,7 +5,6 @@
 //  Created by Aneesh on 13/5/25.
 //
 
-import AuthenticationServices
 import SwiftUI
 
 struct SetupView: View {
@@ -35,7 +34,7 @@ struct SetupView: View {
             }
             
             VStack(spacing: vm.stage == .guardian ? 16 : 36) {
-                if [SetupStage.signIn, SetupStage.guardian, SetupStage.scan].contains(where: { $0 == vm.stage }) == false {
+                if [SetupStage.signIn, SetupStage.guardian, SetupStage.scan].contains(where: { $0 == vm.stage || $0 == vm.transitionStage }) == false {
                     StageHeader(icon: vm.headerIcon, title: vm.headerTitle, subtitle: vm.headerSubtitle)
                         .frame(maxWidth: .infinity)
                         .opacity((vm.stage != .signIn || vm.stage != .transition) ? 1 : 0)
@@ -88,7 +87,7 @@ struct SetupView: View {
                         .transition(.move(edge: .bottom).combined(with: .blurReplace()))
                 } else if vm.stage == .complete {
                     Button {
-                        
+                        UserDefaults.standard.set(true, forKey: "signedIn")
                     } label: {
                         Text("Finish setup")
                             .foregroundStyle(.black)
@@ -138,9 +137,9 @@ struct SetupView: View {
         }
     }
     
-    private func signIn(_ result: Result<ASAuthorization, any Error>) {
+    private func signIn() {
         try? player.stop()
-        vm.signIn(result, as: vm.stage == .guardian ? .guardian : .ward)
+        vm.signIn(as: vm.stage == .guardian ? .guardian : .ward)
     }
     
     @ViewBuilder private func pageOne() -> some View {
@@ -163,14 +162,12 @@ struct SetupView: View {
             
             if vm.transitionStage != .scan {
                 VStack(spacing: 16) {
-                    SignInWithAppleButton { request in
-                        request.requestedScopes = [.fullName, .email]
-                    } onCompletion: { result in
-                        signIn(result)
+                    Button {
+                        signIn()
+                    } label: {
+                        Text("Sign in to this device")
+                            .containAsButton()
                     }
-                    .signInWithAppleButtonStyle(scheme == .light ? .black : .white)
-                    .frame(height: 42)
-                    .clipShape(.rect(cornerRadius: 12))
                     
                     Button {
                         toggleGuardianViews()

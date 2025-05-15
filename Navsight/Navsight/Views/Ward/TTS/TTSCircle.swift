@@ -10,11 +10,15 @@ import SwiftUI
 struct TTSCircle: View {
     @ObservedObject var player: PlaybackEngine
     var scale: Double
+    var namespace: Namespace.ID?
     
-    init(player: PlaybackEngine, scale: Double = 1.0) {
+    init(player: PlaybackEngine, scale: Double = 1.0, namespace: Namespace.ID? = nil) {
         self.player = player
         self.scale = scale
+        self.namespace = namespace
     }
+    
+    @Namespace private var placeholderNamespace
     
     // MARK: Computed properties
     private var audioReactiveScale: Double {
@@ -33,6 +37,7 @@ struct TTSCircle: View {
     var body: some View {
         Circle()
             .fill(.accent)
+            .matchedGeometryEffect(id: "tts-circle", in: namespace ?? placeholderNamespace)
             .frame(width: 180 * scale, height: 180 * scale)
             .scaleEffect(audioReactiveScale)
             .animation(.easeInOut(duration: 0.2), value: audioReactiveScale)

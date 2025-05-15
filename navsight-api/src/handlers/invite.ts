@@ -8,10 +8,6 @@ export const handleInvitesEndpoint = async (request: Request, env: Env): Promise
 
 		const body: InviteAcceptRequest = await request.json();
 
-		if (body.user_id !== userID) {
-			return new Response('Conflicting user IDs received', { status: 403 });
-		}
-
 		const invite: GuardianInvite | undefined = (await supabase!.from('invites').select().eq('id', body.invite_id)).data?.map(
 			(e) => e as GuardianInvite
 		)[0];

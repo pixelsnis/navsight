@@ -5,7 +5,6 @@
 //  Created by Aneesh on 13/5/25.
 //
 
-import AuthenticationServices
 import Foundation
 import Supabase
 import SwiftUI
@@ -108,15 +107,17 @@ extension SetupView {
         }
         
         // MARK: Logical Functions
-        func signIn(_ result: Result<ASAuthorization, any Error>, as role: UserAccount.AccountRole) {
+        func signIn(as role: UserAccount.AccountRole) {
             Task {
                 do {
-                    try await SignInService.signIn(result, as: role)
+                    try await SignInService.signIn(as: role)
                     
                     if role == .ward {
                         self.navigate(to: .location, transition: true)
+                        UserDefaults.standard.set("ward", forKey: "role")
                     } else {
                         self.navigate(to: .scan, transition: true)
+                        UserDefaults.standard.set("guardian", forKey: "role")
                     }
                 } catch {
                     print("Failed to sign in: \(error.localizedDescription)")
@@ -127,6 +128,7 @@ extension SetupView {
         func requestLocationAccess() {
             Task {
                 let permission = await LocationStreamingService().requestPermission()
+                print("Permission granted: \(permission)")
                 
                 if permission {
                     navigate(to: .qrCode)

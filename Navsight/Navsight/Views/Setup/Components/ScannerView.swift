@@ -49,8 +49,8 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
         
-        DispatchQueue.main.async {
-            self.captureSession.startRunning()
+        Task.detached {
+            await self.captureSession.startRunning()
         }
     }
     
@@ -103,7 +103,7 @@ extension SetupView {
                 
                 if viewModel.processingInvite {
                     Circle()
-                        .fill(.thickMaterial)
+                        .fill(.thinMaterial)
                         .frame(width: 324, height: 324)
                         .colorScheme(.dark)
                         .overlay {

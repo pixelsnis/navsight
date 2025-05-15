@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9C6303B92DD4AF3000301A9C /* QRCode in Frameworks */ = {isa = PBXBuildFile; productRef = 9C6303B82DD4AF3000301A9C /* QRCode */; };
+		9C9B7E372DD5F604002B367F /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 9C9B7E362DD5F604002B367F /* GoogleSignIn */; };
+		9C9B7E392DD5F604002B367F /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9C9B7E382DD5F604002B367F /* GoogleSignInSwift */; };
 		9CCF23F62DCF488200891AD1 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 9CCF23F52DCF488200891AD1 /* Auth */; };
 		9CCF23F82DCF488200891AD1 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = 9CCF23F72DCF488200891AD1 /* Realtime */; };
 		9CCF23FA2DCF488200891AD1 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 9CCF23F92DCF488200891AD1 /* Supabase */; };
@@ -43,8 +45,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C9B7E372DD5F604002B367F /* GoogleSignIn in Frameworks */,
 				9C6303B92DD4AF3000301A9C /* QRCode in Frameworks */,
 				9CCF23F62DCF488200891AD1 /* Auth in Frameworks */,
+				9C9B7E392DD5F604002B367F /* GoogleSignInSwift in Frameworks */,
 				9CCF23F82DCF488200891AD1 /* Realtime in Frameworks */,
 				9CCF23FA2DCF488200891AD1 /* Supabase in Frameworks */,
 			);
@@ -93,6 +97,8 @@
 				9CCF23F72DCF488200891AD1 /* Realtime */,
 				9CCF23F92DCF488200891AD1 /* Supabase */,
 				9C6303B82DD4AF3000301A9C /* QRCode */,
+				9C9B7E362DD5F604002B367F /* GoogleSignIn */,
+				9C9B7E382DD5F604002B367F /* GoogleSignInSwift */,
 			);
 			productName = Navsight;
 			productReference = 9CCF23E22DCF455400891AD1 /* Navsight.app */;
@@ -125,6 +131,7 @@
 			packageReferences = (
 				9CCF23F42DCF488200891AD1 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				9C6303B72DD4AF3000301A9C /* XCRemoteSwiftPackageReference "QRCode" */,
+				9C9B7E352DD5F604002B367F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9CCF23E32DCF455400891AD1 /* Products */;
@@ -390,6 +397,14 @@
 				minimumVersion = 26.1.0;
 			};
 		};
+		9C9B7E352DD5F604002B367F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		9CCF23F42DCF488200891AD1 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase/supabase-swift.git";
@@ -405,6 +420,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9C6303B72DD4AF3000301A9C /* XCRemoteSwiftPackageReference "QRCode" */;
 			productName = QRCode;
+		};
+		9C9B7E362DD5F604002B367F /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C9B7E352DD5F604002B367F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		9C9B7E382DD5F604002B367F /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9C9B7E352DD5F604002B367F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 		9CCF23F52DCF488200891AD1 /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
