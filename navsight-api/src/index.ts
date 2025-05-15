@@ -2,6 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { handleLocationRequest } from './handlers/location';
 import { handleTTSRequest } from './handlers/tts';
 import { jwtVerify } from 'jose';
+import { handleInvitesEndpoint } from './handlers/invite';
 
 export interface Env {
 	GROQ_API_KEY: string;
@@ -35,6 +36,8 @@ export default {
 				return await handleLocationRequest(request, env);
 			case 'tts':
 				return await handleTTSRequest(request, env);
+			case 'invites':
+				return await handleInvitesEndpoint(request, env);
 			default:
 				return new Response('Not found', { status: 404 });
 		}

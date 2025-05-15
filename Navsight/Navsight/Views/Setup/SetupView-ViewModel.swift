@@ -7,11 +7,14 @@
 
 import AuthenticationServices
 import Foundation
+import Supabase
 import SwiftUI
 
 extension SetupView {
     @Observable
     class ViewModel {
+        static let shared = ViewModel()
+        
         let languageLabels: [String: String] = [
             "en": "English",
             "hi": "Hindi",
@@ -21,20 +24,26 @@ extension SetupView {
         var stage: SetupStage = .signIn
         var transitionStage: SetupStage = .signIn
         
+        var processingInvite: Bool = false
+        
         // MARK: Computed properties
-        var headerIcon: String {
+        var headerIcon: String? {
             switch transitionStage {
+            case .guardian:
+                return "shield.lefthalf.fill"
             case .location:
                 return "mappin.and.ellipse"
             case .qrCode:
                 return "qrcode.viewfinder"
             default:
-                return ""
+                return nil
             }
         }
         
         var headerTitle: String {
             switch transitionStage {
+            case .guardian:
+                return "Set up as a Guardian"
             case .location:
                 return "Location services"
             case .qrCode:
@@ -48,6 +57,8 @@ extension SetupView {
         
         var headerSubtitle: String {
             switch transitionStage {
+            case .guardian:
+                return "If you’ve already set up your ward’s device, this is the place to be."
             case .location:
                 return "Navsight needs location access to work correctly."
             case .qrCode:
@@ -61,10 +72,14 @@ extension SetupView {
         
         var circleScale: Double {
             switch transitionStage {
+            case .guardian:
+                return 0.3
             case .location:
                 return 1.8
             case .qrCode:
-                return 2.0
+                return 1.8
+            case .scan:
+                return 1.8
             default:
                 return 1.0
             }
@@ -97,7 +112,12 @@ extension SetupView {
             Task {
                 do {
                     try await SignInService.signIn(result, as: role)
-                    self.navigate(to: .location, transition: true)
+                    
+                    if role == .ward {
+                        self.navigate(to: .location, transition: true)
+                    } else {
+                        self.navigate(to: .scan, transition: true)
+                    }
                 } catch {
                     print("Failed to sign in: \(error.localizedDescription)")
                 }
@@ -113,9 +133,47 @@ extension SetupView {
                 }
             }
         }
+        
+        func listenToInviteStatus(id: UUID) async {
+            do {
+                let channel = Supabase.client.channel("invite-\(id.uuidString)")
+                
+                let changes =  channel.postgresChange(UpdateAction.self, schema: "public", table: "invites", filter: .eq("id", value: id))
+                
+                await channel.subscribe()
+                
+                for await change in changes {
+                    let invite: GuardianInvite = try change.record.decode()
+                    
+                    if invite.accepted {
+                        await channel.unsubscribe()
+                        
+                        try await InviteService.updateSelfWithGuardianID()
+                        self.navigate(to: .complete, transition: false)
+                    }
+                }
+            } catch {
+                print("Failed to listen to invite: \(error.localizedDescription)")
+            }
+        }
+        
+        func processInvite(_ result: String) {
+            self.processingInvite = true
+            
+            Task {
+                do {
+                    guard let inviteID = UUID(uuidString: result) else { throw "Invite was not a valid UUID" }
+                    
+                    try await InviteService.accept(id: inviteID)
+                    self.navigate(to: .complete, transition: false)
+                } catch {
+                    print("Failed to process invite: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
     enum SetupStage {
-        case signIn, location, qrCode, complete, transition
+        case signIn, guardian, location, scan, qrCode, complete, transition
     }
 }

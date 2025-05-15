@@ -40,6 +40,14 @@ extension SetupView {
                 do {
                     try await invite.create()
                     self.qr = invite.getQRCode()
+                    
+                    guard let inviteID = invite.invite?.id else { return }
+                    
+                    DispatchQueue.main.async {
+                        Task {
+                            await ViewModel.shared.listenToInviteStatus(id: inviteID)
+                        }
+                    }
                 } catch {
                     print("Failed to generate invite: \(error.localizedDescription)")
                 }

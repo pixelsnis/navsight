@@ -291,6 +291,7 @@
 				INFOPLIST_FILE = Navsight/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Navsight;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR codes to pair with your ward.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow Navsight to share your location to your guardian.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Allow Navsight to share your location to your guardian.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow Navsight to share your location to your guardian.";
@@ -331,6 +332,7 @@
 				INFOPLIST_FILE = Navsight/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Navsight;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Scan QR codes to pair with your ward.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow Navsight to share your location to your guardian.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Allow Navsight to share your location to your guardian.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow Navsight to share your location to your guardian.";
