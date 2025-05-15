@@ -9,7 +9,7 @@ import AVFoundation
 import Combine
 import Foundation
 
-class PlaybackEngine: ObservableObject {
+class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var cue: AudioCue? = nil
     @Published var dialogue: Dialogue? = nil
     
@@ -17,8 +17,11 @@ class PlaybackEngine: ObservableObject {
     @Published private(set) var averagePower: Double = 0.0
     @Published private(set) var linearLevel: Double = 0.0
     
+    // MARK: Additional functionality
+    private var onFinishPlayback: (() -> Void)? = nil
+    
     // MARK: Playback control
-    func play() throws {
+    func play(onFinishPlayback: (() -> Void)? = nil) throws {
         if player == nil { throw "Player was not initialized" }
         
         try session.setActive(true)
@@ -26,6 +29,8 @@ class PlaybackEngine: ObservableObject {
         
         player?.prepareToPlay()
         player?.play()
+        
+        self.onFinishPlayback = onFinishPlayback
         
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { timer in
             guard (self.player?.isPlaying ?? false) else {
@@ -49,6 +54,9 @@ class PlaybackEngine: ObservableObject {
         try session.setCategory(.ambient)
         
         player?.stop()
+        
+        self.onFinishPlayback?()
+        self.onFinishPlayback = nil
         
         self.linearLevel = 0
         self.averagePower = 0
@@ -76,11 +84,18 @@ class PlaybackEngine: ObservableObject {
         
         player = try AVAudioPlayer(data: data)
         player?.isMeteringEnabled = true
+        player?.delegate = self
         
         // Add the first transcription segment to the stream
         if let transcription = dialogue?.transcription.first?.text {
             transcriptionSubject.send(transcription)
         }
+    }
+    
+    // MARK: Player delegate handlers
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.onFinishPlayback?()
+        self.onFinishPlayback = nil
     }
     
     // Transcription handling

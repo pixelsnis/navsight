@@ -9,6 +9,14 @@ import SwiftUI
 
 @main
 struct NavsightApp: App {
+    init() {
+        UserDefaults.standard.register(defaults: [
+            "language": "en",
+            "signedIn": false,
+            "intro_finished": false
+        ])
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

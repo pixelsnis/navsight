@@ -34,7 +34,7 @@ struct SetupView: View {
             }
             
             VStack(spacing: vm.stage == .guardian ? 16 : 36) {
-                if [SetupStage.signIn, SetupStage.guardian, SetupStage.scan].contains(where: { $0 == vm.stage || $0 == vm.transitionStage }) == false {
+                if [SetupStage.signIn, SetupStage.guardian, SetupStage.scan].contains(where: { $0 == vm.stage && $0 == vm.transitionStage }) == false {
                     StageHeader(icon: vm.headerIcon, title: vm.headerTitle, subtitle: vm.headerSubtitle)
                         .frame(maxWidth: .infinity)
                         .opacity((vm.stage != .signIn || vm.stage != .transition) ? 1 : 0)

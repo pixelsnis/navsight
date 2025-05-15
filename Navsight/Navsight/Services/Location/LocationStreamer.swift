@@ -54,9 +54,12 @@ class LocationStreamingService: NSObject {
             error = .permissionDenied
             return
         }
-
+        
+        print("Location service ready to start")
+        
         // Start listening to the user's location
         locationManager.startUpdatingLocation()
+        print("Listening to user location")
     }
 
     func requestPermission() async -> Bool {
@@ -81,6 +84,8 @@ extension LocationStreamingService: CLLocationManagerDelegate {
 
         self.latitude = Double(lat)
         self.longitude = Double(lng)
+        
+        print("Location did change to \(lat), \(lng)")
         
         Task {
             try? await LocationWriter.write(latitude: lat, longitude: lng)

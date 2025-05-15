@@ -19,11 +19,13 @@ export var userID: string | undefined | null = undefined;
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		userID = await getUserIdFromToken(request, env);
+		userID = (await getUserIdFromToken(request, env))?.toLowerCase();
 
 		if (!userID) {
 			return new Response('Unauthorized', { status: 401 });
 		}
+
+		console.info(`Received request from ${userID}`);
 
 		const path = new URL(request.url).pathname.substring(1).split('/');
 
