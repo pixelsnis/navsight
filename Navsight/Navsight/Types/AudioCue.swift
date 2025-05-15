@@ -8,14 +8,14 @@
 import Foundation
 
 struct Dialogue {
-    var file: URL?
+    var data: Data?
     var assetName: String?
     var transcription: [TranscriptionSegment]
     
-    init(file: URL? = nil, asset assetName: String? = nil, transcription: [TranscriptionSegment]) {
-        assert(file != nil || assetName != nil, "Either a file or an asset name must be provided")
+    init(data: Data? = nil, asset assetName: String? = nil, transcription: [TranscriptionSegment]) {
+        assert(data != nil || assetName != nil, "Either raw audio data or an asset name must be provided")
         
-        self.file = file
+        self.data = data
         self.assetName = assetName
         self.transcription = transcription
     }

@@ -20,10 +20,10 @@ struct WardMainView: View {
     
     var body: some View {
         let tapDownGesture = DragGesture(minimumDistance: 0)
-        .updating($isTappedDown) { _, tapped, _ in
-            tapped = true
-            try? self.player.stop()
-        }
+            .updating($isTappedDown) { _, tapped, _ in
+                tapped = true
+                try? self.player.stop()
+            }
         
         let longPressGesture = LongPressGesture(minimumDuration: 1)
             .onEnded { finished in
@@ -62,6 +62,12 @@ struct WardMainView: View {
     }
     
     private func initialize() {
+        DispatchQueue.main.async {
+            Task {
+                await vm.startLocationService()
+            }
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(500)), execute: {
             withAnimation(.default) {
                 scaleUp = true
@@ -78,8 +84,18 @@ struct WardMainView: View {
         }
     }
     
+    @MainActor
     private func onCueLoaded(_ cue: AudioCue) {
-        
+        do {
+            if player.player?.isPlaying == true {
+                try player.stop()
+            }
+            
+            try player.load(cue)
+            try player.play()
+        } catch {
+            print("Failed to load cue: \(error.localizedDescription)")
+        }
     }
 }
 

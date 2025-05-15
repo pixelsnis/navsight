@@ -11,6 +11,7 @@ extension WardMainView {
     @Observable
     class ViewModel {
         var status: String = ""
+        var querying: Bool = false
         
         private(set) var locationStreamer: LocationStreamingService = .init()
         
@@ -19,7 +20,23 @@ extension WardMainView {
         }
         
         func queryLocation(onResult: @escaping (AudioCue) -> Void) async {
+            if querying { return }
             
+            guard let latitude = locationStreamer.latitude, let longitude = locationStreamer.longitude else { return }
+            
+            querying = true
+            
+            Task {
+                do {
+                    let cue = try await LocationQueryService.ask(lat: latitude, lng: longitude)
+                    onResult(cue)
+                    
+                    querying = false
+                } catch {
+                    print("Failed to query location: \(error.localizedDescription)")
+                    querying = false
+                }
+            }
         }
     }
 }

@@ -5,4 +5,8 @@ struct Location: Codable {
     var latitude: Double
     var longitude: Double
     var updated: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case userID = "user_id", latitude, longitude, updated
+    }
 }

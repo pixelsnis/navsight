@@ -1,74 +1,70 @@
 import { Loader } from '@googlemaps/js-api-loader';
-import { Env, supabase, userID } from '..';
-import { Location } from '../types/location';
+import { Env } from '..';
 import Groq from 'groq-sdk';
 import { getTTSAudio } from './tts';
 
 export const handleLocationRequest = async (request: Request, env: Env): Promise<Response> => {
 	try {
-		if (request.method !== 'GET') {
-			return new Response('Expected GET request', { status: 405 });
+		if (request.method !== 'POST') {
+			return new Response('Expected POST request', { status: 405 });
 		}
 
-		const location: Location | undefined = (await supabase!.from('location').select().eq('user_id', userID!)).data?.map(
-			(e) => e as Location
-		)[0];
+		const location: {
+			lat: number;
+			lng: number;
+			language: string;
+		} = await request.json();
 
-		if (!location) {
-			console.debug('No location found for user ID:', userID);
-			return new Response('No location found', { status: 404 });
-		}
+		console.info('📍 Got user location', {
+			location: location,
+		});
 
 		// Using the Maps API and the user's most recent coordinates, find out:
 		// 1. The street and general area they're in
 		// 2. Two nearby landmarks
 
-		const loader = new Loader({
-			apiKey: env.MAPS_KEY,
-			version: 'weekly',
+		// --- Reverse Geocoding ---
+		const geocodeRes = await fetch(
+			`https://geocode.googleapis.com/v4beta/geocode/location?location.latitude=${location.lat}&location.longitude=${location.lng}&key=${env.MAPS_KEY}`
+		);
+		const geocodeData: any = await geocodeRes.json();
+
+		console.info(`Received reverse geocode response`, {
+			'geocode-response': geocodeData,
 		});
 
-		const { Place } = await loader.importLibrary('places');
-		const { Geocoder } = await loader.importLibrary('geocoding');
+		const userAddress = geocodeData.results[0]?.formattedAddress ?? 'an unknown location';
+		console.info(`🗺️ User address: ${userAddress}`);
 
-		const center = new google.maps.LatLng(location.latitude, location.longitude);
-
-		console.debug('Center coordinates:', center);
-
-		const { places } = await Place.searchNearby({
-			fields: ['displayName'],
-			locationRestriction: {
-				center: center,
-				radius: 50,
+		// --- Places Nearby ---
+		const placesRes = await fetch(`https://places.googleapis.com/v1/places:searchNearby`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Goog-Api-Key': env.MAPS_KEY,
+				'X-Goog-FieldMask': 'places.displayName',
 			},
-			maxResultCount: 2,
-			rankPreference: google.maps.places.SearchNearbyRankPreference.POPULARITY,
+			body: JSON.stringify({
+				maxResultCount: 2,
+				locationRestriction: {
+					circle: {
+						center: {
+							latitude: location.lat,
+							longitude: location.lng,
+						},
+						radius: 50.0,
+					},
+				},
+				rankPreference: 'POPULARITY',
+			}),
 		});
 
-		console.debug('Nearby places:', places);
-
-		const landmarks = places.map((e) => `${e.displayName}`);
-
-		console.debug('Landmarks:', landmarks);
-
-		const geocoder = new Geocoder();
-		const geocodedLocation = await geocoder.geocode({
-			location: {
-				lat: location.latitude,
-				lng: location.longitude,
-			},
+		const placesData: any = await placesRes.json();
+		console.info(`Got response from nearby search`, {
+			'nearby-search-response': placesData,
 		});
 
-		console.debug('Geocoded location:', geocodedLocation);
-
-		const userAddress = geocodedLocation.results[0].formatted_address;
-
-		console.debug('User address:', userAddress);
-
-		const userLanguagePreference: string =
-			((await supabase!.from('users').select('language').eq('id', userID!)).data ?? [])[0].language ?? 'English';
-
-		console.debug('User language preference:', userLanguagePreference);
+		const landmarks: any[] = placesData.places.map((place: any) => place.displayName.text);
 
 		const groq = new Groq({ apiKey: env.GROQ_API_KEY });
 
@@ -80,8 +76,8 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 					content: `
                     You are a helpful assistant for the blind that describes the location they are in. 
                     You will be provided their relative address and the names of upto two important landmarks nearby. 
-                    Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are.
-                    Be extremely concise in your speech. Do not waste words. Speak in ${userLanguagePreference} (ISO language code) but write only in English letters. Use simple, commonly-spoken words. 
+                    Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are. Do not mention the city, it is implied.
+                    Be extremely concise in your speech. Do not waste words. Speak in ${location.language} (ISO language code). Use simple, commonly-spoken words. 
                     `,
 				},
 				{
@@ -95,7 +91,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 			],
 		});
 
-		console.debug('Groq completion:', completion);
+		console.debug('💬 Groq completion:', completion);
 
 		const textResponse = completion.choices[0].message.content;
 
@@ -106,25 +102,16 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 		const ttsAudio = await getTTSAudio(
 			{
 				text: textResponse ?? 'Sorry, something went wrong. Please try again.',
-				language: userLanguagePreference,
+				language: location.language,
 				provider: 'openai',
 			},
 			env
 		);
 
-		console.debug('TTS audio:', ttsAudio);
-
-		const { readable, writable } = new TransformStream();
-		const writer = writable.getWriter();
-
 		const headers = new Headers();
 		headers.set('X-Transcription', textResponse);
 
-		for (const buf of ttsAudio) {
-			writer.write(buf);
-		}
-
-		return new Response(readable, { headers: headers, status: 200 });
+		return new Response(ttsAudio, { headers: headers, status: 200 });
 	} catch (err) {
 		console.error('Error handling location request:', err);
 		return new Response('Internal server error', { status: 500 });

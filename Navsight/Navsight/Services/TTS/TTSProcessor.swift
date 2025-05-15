@@ -37,11 +37,7 @@ enum TTSProcessor {
                     throw error ?? "Unknown error"
                 }
                 
-                let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).mp3", conformingTo: .mp3)
-                
-                FileManager.default.createFile(atPath: fileURL.absoluteString, contents: data)
-                
-                let cue: AudioCue = .init(default: .init(file: fileURL, transcription: [
+                let cue: AudioCue = .init(default: .init(data: data, transcription: [
                     .init(text: text, time: 0)
                 ]))
                 

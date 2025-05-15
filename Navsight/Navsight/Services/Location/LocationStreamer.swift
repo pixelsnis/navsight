@@ -61,6 +61,10 @@ class LocationStreamingService: NSObject {
         locationManager.startUpdatingLocation()
         print("Listening to user location")
     }
+    
+    func update() {
+        locationManager.requestLocation()
+    }
 
     func requestPermission() async -> Bool {
         let currentAuthorization = locationManager.authorizationStatus
@@ -81,14 +85,18 @@ extension LocationStreamingService: CLLocationManagerDelegate {
 
         let lat = location.coordinate.latitude
         let lng = location.coordinate.longitude
+        
+        if (self.latitude == lat && self.longitude == lng) { return } // Ignore writing if the location hasn't changed
 
         self.latitude = Double(lat)
         self.longitude = Double(lng)
         
-        print("Location did change to \(lat), \(lng)")
-        
         Task {
-            try? await LocationWriter.write(latitude: lat, longitude: lng)
+            do {
+                try await LocationWriter.write(latitude: lat, longitude: lng)
+            } catch {
+                print("Failed to write to Supabase: \(error.localizedDescription)")
+            }
         }
     }
     

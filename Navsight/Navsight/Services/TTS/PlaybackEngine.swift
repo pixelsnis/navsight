@@ -13,9 +13,30 @@ class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var cue: AudioCue? = nil
     @Published var dialogue: Dialogue? = nil
     
+    override init() {
+        super.init()
+        
+        monitoringTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+            .sink() { _ in
+                if self.player?.isPlaying != true {
+                    return
+                }
+               
+                if let transcription = self.currentTranscriptionSegment(), transcription != self.transcriptionSubject.value {
+                    self.transcriptionSubject.send(transcription)
+                }
+                
+                self.player?.updateMeters()
+                
+                self.averagePower = Double(self.player?.averagePower(forChannel: 0) ?? 0)
+                self.linearLevel = pow(10, self.averagePower / 20)
+            }
+    }
+    
     // MARK: Power monitoring
     @Published private(set) var averagePower: Double = 0.0
     @Published private(set) var linearLevel: Double = 0.0
+    private var monitoringTimer: AnyCancellable?
     
     // MARK: Additional functionality
     private var onFinishPlayback: (() -> Void)? = nil
@@ -31,22 +52,6 @@ class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
         player?.play()
         
         self.onFinishPlayback = onFinishPlayback
-        
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { timer in
-            guard (self.player?.isPlaying ?? false) else {
-                timer.invalidate()
-                return
-            }
-            
-            if let transcription = self.currentTranscriptionSegment(), transcription != self.transcriptionSubject.value {
-                self.transcriptionSubject.send(transcription)
-            }
-            
-            self.player?.updateMeters()
-            
-            self.averagePower = Double(self.player?.averagePower(forChannel: 0) ?? 0)
-            self.linearLevel = pow(10, self.averagePower / 20)
-        })
     }
     
     func stop() throws {
@@ -62,6 +67,7 @@ class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
         self.averagePower = 0
     }
     
+    @MainActor
     func load(_ cue: AudioCue) throws {
         self.cue = cue
         
@@ -70,14 +76,12 @@ class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         print("Transcription length for dialogue: \(dialogue?.transcription.count ?? -1)")
         
-        var data: Data? = nil
+        var data: Data? = dialogue?.data
         
-        if let assetName = dialogue?.assetName {
+        if data == nil, let assetName = dialogue?.assetName {
             guard let fileURL = Bundle.main.url(forResource: assetName, withExtension: "mp3") else { throw "Could not locate asset: \(assetName)" }
             print("Loading bundle asset from: \(fileURL.absoluteString)")
             data = try Data(contentsOf: fileURL)
-        } else if let file = dialogue?.file {
-            data = try Data(contentsOf: file)
         }
         
         guard let data else { throw "No bytes could be loaded into player" }
@@ -85,6 +89,8 @@ class PlaybackEngine: NSObject, ObservableObject, AVAudioPlayerDelegate {
         player = try AVAudioPlayer(data: data)
         player?.isMeteringEnabled = true
         player?.delegate = self
+        
+        print("Data loaded into player")
         
         // Add the first transcription segment to the stream
         if let transcription = dialogue?.transcription.first?.text {
