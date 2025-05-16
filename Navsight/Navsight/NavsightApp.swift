@@ -13,7 +13,9 @@ struct NavsightApp: App {
         UserDefaults.standard.register(defaults: [
             "language": "en",
             "signedIn": false,
-            "intro_finished": false
+            "intro_finished": false,
+            "last_latitude": 0,
+            "last_longitude": 0
         ])
     }
     

@@ -27,6 +27,10 @@ enum SignInService {
             
             let user: UserAccount = .init(id: userID, name: profile.name, email: profile.email, role: role, language: UserDefaults.standard.string(forKey: "language") ?? "en")
             try await Supabase.client.from("users").upsert(user).execute()
+            
+            if role == .guardian {
+                _ = try await WardInfo.get()
+            }
         } catch {
             throw error
         }

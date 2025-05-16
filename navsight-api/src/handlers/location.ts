@@ -77,6 +77,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
                     You are a helpful assistant for the blind that describes the location they are in. 
                     You will be provided their relative address and the names of important landmarks nearby. 
                     Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are. 
+					Reference the names of places rather than their general type (for example, say "Apple Park" instead of "a building")
 					Refer only to at most 2 major landmarks from the data provided. Do not mention the city, it is implied.
                     Be extremely concise in your speech. Do not waste words. Speak in ${location.language} (ISO language code). Use simple, commonly-spoken words. 
                     `,

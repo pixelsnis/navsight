@@ -8,39 +8,34 @@
 import Foundation
 import Supabase
 
-@Observable
-class LocationListener {
-    private(set) var location: Location? = nil
-    private(set) var userID: UUID
-    
-    init(for userID: UUID) {
-        self.userID = userID
-    }
-    
-    func listen() async throws {
+enum LocationListener {
+    static func listen(for user: UserAccount, onChange: @escaping (Location) -> Void) async throws {
+        let userID = user.id
+        
+        // Get initial location data
+        let locationQueryResult: [Location] = try await Supabase.client.from("location").select().eq("user_id", value: userID).execute().value
+        if let location = locationQueryResult.first {
+            onChange(location)
+        }
+        
         let channel =  Supabase.client.channel("location-\(userID.uuidString)")
-        await channel.subscribe()
         
         let changes = channel.postgresChange(AnyAction.self, schema: "public", table: "location", filter: .eq("user_id", value: userID))
+        await channel.subscribe()
+        
+        print("Listening for location updates")
         
         for await change in changes {
             switch change {
             case .update(let update):
-                try updateEvent(update)
+                let location = try update.decodeRecord(as: Location.self, decoder: JSONDecoder())
+                onChange(location)
             case .insert(let insert):
-                try insertEvent(insert)
+                let location = try insert.decodeRecord(as: Location.self, decoder: JSONDecoder())
+                onChange(location)
             default:
                 break
             }
         }
-    }
-    
-    // MARK: Update handles
-    private func updateEvent(_ update: UpdateAction) throws {
-        self.location = try update.decodeRecord(as: Location.self, decoder: JSONDecoder())
-    }
-    
-    private func insertEvent(_ insert: InsertAction) throws {
-        self.location = try insert.decodeRecord(as: Location.self, decoder: JSONDecoder())
     }
 }
