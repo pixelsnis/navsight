@@ -61,12 +61,14 @@ struct WardMainView: View {
                 .allowsHitTesting(vm.querying == false)
             
             TTSTranscription(player: player)
+                .frame(maxWidth: .infinity)
             
             Spacer()
             
             Text(vm.status)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
                 .contentTransition(.opacity)
                 .animation(.default, value: vm.status)
         }

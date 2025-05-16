@@ -16,15 +16,14 @@ struct ContentView: View {
         Group {
             if signedIn {
                 Group {
-                    DeveloperView()
-//                    if role == "ward" {
-//                        WardMainView()
-//                    } else if role == "guardian" {
-//                        GuardianMainView()
-//                    } else {
-//                        Image(systemName: "xmark")
-//                            .foregroundStyle(.secondary)
-//                    }
+                    if role == "ward" {
+                        WardMainView()
+                    } else if role == "guardian" {
+                        GuardianMainView()
+                    } else {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .transition(.move(edge: .bottom).combined(with: .blurReplace()))
             } else {
