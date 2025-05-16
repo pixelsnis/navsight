@@ -1,14 +1,16 @@
-import { Loader } from '@googlemaps/js-api-loader';
 import { Env } from '..';
 import Groq from 'groq-sdk';
 import { getTTSAudio } from './tts';
 
+// Handles the location request by fetching the user's location, finding nearby landmarks, and generating a text response.
 export const handleLocationRequest = async (request: Request, env: Env): Promise<Response> => {
 	try {
+		// Validate the request method to ensure it's a POST request.
 		if (request.method !== 'POST') {
 			return new Response('Expected POST request', { status: 405 });
 		}
 
+		// Extract the location data from the request body.
 		const location: {
 			lat: number;
 			lng: number;
@@ -24,6 +26,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 		// 2. Two nearby landmarks
 
 		// --- Reverse Geocoding ---
+		// Fetch the reverse geocoding data to determine the user's address.
 		const geocodeRes = await fetch(
 			`https://geocode.googleapis.com/v4beta/geocode/location?location.latitude=${location.lat}&location.longitude=${location.lng}&key=${env.MAPS_KEY}`
 		);
@@ -33,10 +36,12 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 			'geocode-response': geocodeData,
 		});
 
+		// Extract the user's address from the geocoding data.
 		const userAddress = geocodeData.results[0]?.formattedAddress ?? 'an unknown location';
 		console.info(`🗺️ User address: ${userAddress}`);
 
 		// --- Places Nearby ---
+		// Fetch the places nearby the user's location.
 		const placesRes = await fetch(`https://places.googleapis.com/v1/places:searchNearby`, {
 			method: 'POST',
 			headers: {
@@ -64,10 +69,13 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 			'nearby-search-response': placesData,
 		});
 
+		// Extract the names of nearby landmarks.
 		const landmarks: any[] = placesData.places.map((place: any) => place.displayName.text);
 
+		// Initialize the Groq client for generating a text response.
 		const groq = new Groq({ apiKey: env.GROQ_API_KEY });
 
+		// Generate a text response summarizing the user's location and nearby landmarks.
 		const completion = await groq.chat.completions.create({
 			model: 'meta-llama/llama-4-scout-17b-16e-instruct',
 			messages: [
@@ -95,12 +103,14 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 
 		console.debug('💬 Groq completion:', completion);
 
+		// Extract the generated text response.
 		const textResponse = completion.choices[0].message.content;
 
 		if (!textResponse) throw 'Groq response was empty';
 
 		console.debug('Text response:', textResponse);
 
+		// Generate the TTS audio for the text response.
 		const ttsAudio = await getTTSAudio(
 			{
 				text: textResponse ?? 'Sorry, something went wrong. Please try again.',
@@ -110,6 +120,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 			env
 		);
 
+		// Set the transcription header for the response.
 		const headers = new Headers();
 		headers.set('X-Transcription', textResponse);
 

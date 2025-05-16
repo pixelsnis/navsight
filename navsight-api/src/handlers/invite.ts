@@ -8,6 +8,7 @@ export const handleInvitesEndpoint = async (request: Request, env: Env): Promise
 
 		const body: InviteAcceptRequest = await request.json();
 
+		// Retrieve the invite from the database and check if it exists and hasn't been accepted yet
 		const invite: GuardianInvite | undefined = (await supabase!.from('invites').select().eq('id', body.invite_id)).data?.map(
 			(e) => e as GuardianInvite
 		)[0];
@@ -20,6 +21,7 @@ export const handleInvitesEndpoint = async (request: Request, env: Env): Promise
 			return new Response('Invite not found', { status: 404 });
 		}
 
+		// Update the user's guardian and mark the invite as accepted in a single transaction
 		const updatePromises = [
 			await supabase!.from('users').update({ guardian: body.user_id }).eq('id', invite.sender),
 			await supabase!.from('invites').update({ accepted: true }).eq('id', invite.id),

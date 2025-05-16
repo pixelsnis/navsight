@@ -1,23 +1,30 @@
 import OpenAI from 'openai';
 import { Env } from '..';
-import { ElevenLabsClient } from 'elevenlabs';
 
+// Handles the TTS request by validating the request method, extracting the request body,
+// generating the TTS audio, and streaming the audio back to the client.
 export const handleTTSRequest = async (request: Request, env: Env): Promise<Response> => {
 	try {
+		// Validate the request method to ensure it's a POST request.
 		if (request.method !== 'POST') {
 			return new Response('Expected POST request', { status: 405 });
 		}
+		// Extract the TTS request body from the request.
 		const body: TTSRequest = await request.json();
 
+		// Create a TransformStream to handle the streaming of the TTS audio.
 		const { readable, writable } = new TransformStream();
 		const writer = writable.getWriter();
 
+		// Generate the TTS audio based on the request body.
 		const buffer = await getTTSAudio(body, env);
 
+		// Write the generated TTS audio buffer to the writer.
 		for (const buf of buffer) {
 			writer.write(buf);
 		}
 
+		// Return the response with the TTS audio stream.
 		return new Response(readable, { status: 200 });
 	} catch (err) {
 		console.error(err);
@@ -25,9 +32,11 @@ export const handleTTSRequest = async (request: Request, env: Env): Promise<Resp
 	}
 };
 
+// Generates the TTS audio based on the request parameters.
 export const getTTSAudio = async (request: TTSRequest, env: Env) => {
 	const openai = new OpenAI({ apiKey: env.OPENAI_KEY });
 
+	// Create the TTS audio with specific settings for voice, tone, and delivery.
 	const ttsAudio = await openai.audio.speech.create({
 		model: 'gpt-4o-mini-tts',
 		response_format: 'mp3',
@@ -44,6 +53,7 @@ export const getTTSAudio = async (request: TTSRequest, env: Env) => {
 		`,
 	});
 
+	// Convert the TTS audio response to a Uint8Array buffer.
 	const buf = new Uint8Array(await ttsAudio.arrayBuffer());
 	console.info(`Got TTS response of size ${buf.byteLength} bytes`);
 
