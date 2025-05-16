@@ -45,7 +45,7 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 				'X-Goog-FieldMask': 'places.displayName',
 			},
 			body: JSON.stringify({
-				maxResultCount: 2,
+				maxResultCount: 5,
 				locationRestriction: {
 					circle: {
 						center: {
@@ -75,8 +75,9 @@ export const handleLocationRequest = async (request: Request, env: Env): Promise
 					role: 'system',
 					content: `
                     You are a helpful assistant for the blind that describes the location they are in. 
-                    You will be provided their relative address and the names of upto two important landmarks nearby. 
-                    Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are. Do not mention the city, it is implied.
+                    You will be provided their relative address and the names of important landmarks nearby. 
+                    Summarize the location and landmark data given to you in one brief sentence to describe to the user where they are. 
+					Refer only to at most 2 major landmarks from the data provided. Do not mention the city, it is implied.
                     Be extremely concise in your speech. Do not waste words. Speak in ${location.language} (ISO language code). Use simple, commonly-spoken words. 
                     `,
 				},
