@@ -1,0 +1,95 @@
+Date : 2025-05-16 21:26:30
+Directory : /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight
+Total : 41 files,  1687 codes, 345 comments, 402 blanks, all 2434 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Swift    |         36 |      1,606 |        345 |        398 |      2,349 |
+| JSON     |          5 |         81 |          0 |          4 |         85 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                 | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                    |         41 |      1,687 |        345 |        402 |      2,434 |
+| . (Files)                                                                                                            |          1 |         19 |          0 |          0 |         19 |
+| Navsight                                                                                                             |         40 |      1,668 |        345 |        402 |      2,415 |
+| Navsight (Files)                                                                                                     |          2 |         51 |         12 |          9 |         72 |
+| Navsight/Assets.xcassets                                                                                             |          3 |         56 |          0 |          3 |         59 |
+| Navsight/Assets.xcassets (Files)                                                                                     |          1 |          6 |          0 |          1 |          7 |
+| Navsight/Assets.xcassets/AccentColor.colorset                                                                        |          1 |         15 |          0 |          1 |         16 |
+| Navsight/Assets.xcassets/AppIcon.appiconset                                                                          |          1 |         35 |          0 |          1 |         36 |
+| Navsight/Components                                                                                                  |          1 |         18 |          6 |          4 |         28 |
+| Navsight/Preview Content                                                                                             |          1 |          6 |          0 |          1 |          7 |
+| Navsight/Preview Content/Preview Assets.xcassets                                                                     |          1 |          6 |          0 |          1 |          7 |
+| Navsight/Services                                                                                                    |         13 |        465 |        204 |        154 |        823 |
+| Navsight/Services (Files)                                                                                            |          2 |         35 |         12 |         14 |         61 |
+| Navsight/Services/Location                                                                                           |          4 |        165 |         63 |         47 |        275 |
+| Navsight/Services/TTS                                                                                                |          3 |        127 |         63 |         46 |        236 |
+| Navsight/Services/User                                                                                               |          4 |        138 |         66 |         47 |        251 |
+| Navsight/Static                                                                                                      |          1 |         54 |          6 |         10 |         70 |
+| Navsight/Types                                                                                                       |          3 |         70 |         12 |         19 |        101 |
+| Navsight/Utilities                                                                                                   |          2 |         12 |         12 |          8 |         32 |
+| Navsight/Views                                                                                                       |         14 |        936 |         93 |        194 |      1,223 |
+| Navsight/Views/Developer                                                                                             |          1 |         49 |          6 |          9 |         64 |
+| Navsight/Views/Guardian                                                                                              |          3 |        160 |         18 |         36 |        214 |
+| Navsight/Views/Guardian (Files)                                                                                      |          2 |        114 |         12 |         26 |        152 |
+| Navsight/Views/Guardian/Components                                                                                   |          1 |         46 |          6 |         10 |         62 |
+| Navsight/Views/Setup                                                                                                 |          6 |        519 |         40 |         88 |        647 |
+| Navsight/Views/Setup (Files)                                                                                         |          2 |        323 |         15 |         47 |        385 |
+| Navsight/Views/Setup/Components                                                                                      |          4 |        196 |         25 |         41 |        262 |
+| Navsight/Views/Ward                                                                                                  |          4 |        208 |         29 |         61 |        298 |
+| Navsight/Views/Ward (Files)                                                                                          |          2 |        143 |         13 |         40 |        196 |
+| Navsight/Views/Ward/TTS                                                                                              |          2 |         65 |         16 |         21 |        102 |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                             | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/AccentColor.colorset/Contents.json    | JSON     |         15 |          0 |          1 |         16 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/AppIcon.appiconset/Contents.json      | JSON     |         35 |          0 |          1 |         36 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/Contents.json                         | JSON     |          6 |          0 |          1 |          7 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Components/ButtonContainer.swift                      | Swift    |         18 |          6 |          4 |         28 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/ContentView.swift                                     | Swift    |         33 |          6 |          5 |         44 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/NavsightApp.swift                                     | Swift    |         18 |          6 |          4 |         28 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Preview Content/Preview Assets.xcassets/Contents.json | JSON     |          6 |          0 |          1 |          7 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationListener.swift              | Swift    |         30 |         17 |          8 |         55 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationQueryService.swift          | Swift    |         39 |         23 |         13 |         75 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationStreamer.swift              | Swift    |         88 |         23 |         23 |        134 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationWriter.swift                | Swift    |          8 |          0 |          3 |         11 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/SFXPlayer.swift                              | Swift    |         27 |          6 |         10 |         43 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/SupabaseClient.swift                         | Swift    |          8 |          6 |          4 |         18 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/PlaybackEngine.swift                     | Swift    |         75 |         34 |         30 |        139 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/TTSProcessor.swift                       | Swift    |         41 |         23 |         11 |         75 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/TranscriptionHandler.swift               | Swift    |         11 |          6 |          5 |         22 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/InviteService.swift                     | Swift    |         83 |         34 |         26 |        143 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/SignIn.swift                            | Swift    |         39 |         20 |         13 |         72 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/UserIDProvider.swift                    | Swift    |          6 |          6 |          3 |         15 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/WardInfo.swift                          | Swift    |         10 |          6 |          5 |         21 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Static/AudioCues.swift                                | Swift    |         54 |          6 |         10 |         70 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/AudioCue.swift                                  | Swift    |         28 |          6 |          9 |         43 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/LocationTypes.swift                             | Swift    |         10 |          0 |          3 |         13 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/UserTypes.swift                                 | Swift    |         32 |          6 |          7 |         45 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Utilities/AuthenticateRequest.swift                   | Swift    |          7 |          6 |          4 |         17 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Utilities/StringToError.swift                         | Swift    |          5 |          6 |          4 |         15 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Developer/DeveloperView.swift                   | Swift    |         49 |          6 |          9 |         64 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/Components/LocationBlinker.swift       | Swift    |         46 |          6 |         10 |         62 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/GuardianMainView-ViewModel.swift       | Swift    |         29 |          6 |          9 |         44 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/GuardianMainView.swift                 | Swift    |         85 |          6 |         17 |        108 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/LocationGrantComponents.swift  | Swift    |         31 |          6 |          5 |         42 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/QRCode.swift                   | Swift    |         44 |          6 |          8 |         58 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/ScannerView.swift              | Swift    |         93 |          7 |         23 |        123 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/StageHeader.swift              | Swift    |         28 |          6 |          5 |         39 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/SetupView-ViewModel.swift                 | Swift    |        146 |          9 |         27 |        182 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/SetupView.swift                           | Swift    |        177 |          6 |         20 |        203 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/TTS/TTSCircle.swift                        | Swift    |         26 |         10 |         10 |         46 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/TTS/TTSTranscription.swift                 | Swift    |         39 |          6 |         11 |         56 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/WardMainView-ViewModel.swift               | Swift    |         31 |          6 |         13 |         50 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/WardMainView.swift                         | Swift    |        112 |          7 |         27 |        146 |
+| /Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/buildServer.json                                               | JSON     |         19 |          0 |          0 |         19 |
+| Total                                                                                                                |          |      1,687 |        345 |        402 |      2,434 |
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

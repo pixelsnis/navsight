@@ -1,0 +1,43 @@
+"filename", "language", "Swift", "JSON", "comment", "blank", "total"
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/AccentColor.colorset/Contents.json", "JSON", 0, 15, 0, 1, 16
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/AppIcon.appiconset/Contents.json", "JSON", 0, 35, 0, 1, 36
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Assets.xcassets/Contents.json", "JSON", 0, 6, 0, 1, 7
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Components/ButtonContainer.swift", "Swift", 18, 0, 6, 4, 28
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/ContentView.swift", "Swift", 33, 0, 6, 5, 44
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/NavsightApp.swift", "Swift", 18, 0, 6, 4, 28
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Preview Content/Preview Assets.xcassets/Contents.json", "JSON", 0, 6, 0, 1, 7
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationListener.swift", "Swift", 30, 0, 17, 8, 55
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationQueryService.swift", "Swift", 39, 0, 23, 13, 75
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationStreamer.swift", "Swift", 88, 0, 23, 23, 134
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/Location/LocationWriter.swift", "Swift", 8, 0, 0, 3, 11
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/SFXPlayer.swift", "Swift", 27, 0, 6, 10, 43
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/SupabaseClient.swift", "Swift", 8, 0, 6, 4, 18
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/PlaybackEngine.swift", "Swift", 75, 0, 34, 30, 139
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/TTSProcessor.swift", "Swift", 41, 0, 23, 11, 75
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/TTS/TranscriptionHandler.swift", "Swift", 11, 0, 6, 5, 22
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/InviteService.swift", "Swift", 83, 0, 34, 26, 143
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/SignIn.swift", "Swift", 39, 0, 20, 13, 72
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/UserIDProvider.swift", "Swift", 6, 0, 6, 3, 15
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Services/User/WardInfo.swift", "Swift", 10, 0, 6, 5, 21
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Static/AudioCues.swift", "Swift", 54, 0, 6, 10, 70
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/AudioCue.swift", "Swift", 28, 0, 6, 9, 43
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/LocationTypes.swift", "Swift", 10, 0, 0, 3, 13
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Types/UserTypes.swift", "Swift", 32, 0, 6, 7, 45
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Utilities/AuthenticateRequest.swift", "Swift", 7, 0, 6, 4, 17
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Utilities/StringToError.swift", "Swift", 5, 0, 6, 4, 15
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Developer/DeveloperView.swift", "Swift", 49, 0, 6, 9, 64
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/Components/LocationBlinker.swift", "Swift", 46, 0, 6, 10, 62
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/GuardianMainView-ViewModel.swift", "Swift", 29, 0, 6, 9, 44
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Guardian/GuardianMainView.swift", "Swift", 85, 0, 6, 17, 108
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/LocationGrantComponents.swift", "Swift", 31, 0, 6, 5, 42
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/QRCode.swift", "Swift", 44, 0, 6, 8, 58
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/ScannerView.swift", "Swift", 93, 0, 7, 23, 123
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/Components/StageHeader.swift", "Swift", 28, 0, 6, 5, 39
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/SetupView-ViewModel.swift", "Swift", 146, 0, 9, 27, 182
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Setup/SetupView.swift", "Swift", 177, 0, 6, 20, 203
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/TTS/TTSCircle.swift", "Swift", 26, 0, 10, 10, 46
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/TTS/TTSTranscription.swift", "Swift", 39, 0, 6, 11, 56
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/WardMainView-ViewModel.swift", "Swift", 31, 0, 6, 13, 50
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/Navsight/Views/Ward/WardMainView.swift", "Swift", 112, 0, 7, 27, 146
+"/Users/aneesh/Desktop/PES/Sem 4/HFD/Navsight/Navsight/buildServer.json", "JSON", 0, 19, 0, 0, 19
+"Total", "-", 1606, 81, 345, 402, 2434

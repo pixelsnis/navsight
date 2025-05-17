@@ -25,10 +25,10 @@ extension GuardianMainView {
             self.latitude = lastLatitude
             self.longitude = lastLongitude
             
-            guard let wardAccountData: Data = UserDefaults.standard.data(forKey: "ward") else { return }
-            
-            if let ward = try? JSONDecoder().decode(UserAccount.self, from: wardAccountData) {
+            if let ward = try? await WardInfo.get() {
                 try await LocationListener.listen(for: ward) { location in
+                    print("Got location")
+                    
                     if !self.live {
                         self.live = true
                     }
